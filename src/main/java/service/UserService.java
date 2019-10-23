@@ -28,41 +28,43 @@ public class UserService {
 
 
     public List<User> getAllUsers() {
-        ArrayList<User> returnList = new ArrayList<>();
-       dataBase.values().stream().forEach(u-> returnList.add(u));
-       return returnList;
+        return new ArrayList<>(dataBase.values());
     }
-
     public User getUserById(Long id) {
         return dataBase.get(id);
     }
 
     public boolean addUser(User user) {
-        long key = maxId.incrementAndGet();
-        User userWithId =  new User(key, user.getEmail(), user.getPassword());
-        dataBase.put(key, userWithId);
-        return true;
+        if (!isExistsThisUser(user)) {
+            long key = maxId.incrementAndGet();
+            User userWithId = new User(key, user.getEmail(), user.getPassword());
+            dataBase.put(key, userWithId);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public void deleteAllUser() {
-dataBase.clear();
+        dataBase.clear();
     }
 
     public boolean isExistsThisUser(User user) {
-        long count = dataBase.values().stream().filter(u-> u.getEmail().equals(user.getEmail())).count();
-        return count>0;
+        return dataBase.containsValue(user);
     }
 
     public List<User> getAllAuth() {
-        ArrayList<User> returnAuthList = new ArrayList<>();
-        dataBase.values().stream().forEach(u-> returnAuthList.add(u));
-    return returnAuthList;
+        return new ArrayList<>(authMap.values());
     }
 
 
     public boolean authUser(User user) {
-        authMap.put(user.getId(), user);
-        return true;
+        if (user!=null && user.getId()!=null && isExistsThisUser(user)) {
+            authMap.put(user.getId(), user);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public void logoutAllUsers() {
@@ -72,5 +74,4 @@ dataBase.clear();
     public boolean isUserAuthById(Long id) {
         return authMap.containsKey(id);
     }
-
 }

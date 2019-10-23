@@ -29,17 +29,19 @@ public class LoginServlet extends HttpServlet {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
         };
-        User user = userService.getAllUsers().stream().filter(u->u.getEmail().equals(email)).findFirst().orElse(null);
-        if (user == null || !user.getPassword().equals(password)) {
+        User user = userService.getAllUsers().stream().filter(u->u.getEmail().equals(email)&& u.getPassword().equals(password))
+                .findFirst().orElse(null);
+        if (user == null ) {
             resp.setContentType("text/html;charset=utf-8");
             resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
-        };
-        userService.authUser(user);
-        Gson gson = new Gson();
-        String json = gson.toJson(user);
-        resp.setContentType("text/html;charset=utf-8");
-        resp.getWriter().println(json);
-        resp.setStatus(HttpServletResponse.SC_OK);
+        } else {
+            userService.authUser(user);
+            Gson gson = new Gson();
+            String json = gson.toJson(user);
+            resp.setContentType("text/html;charset=utf-8");
+            resp.getWriter().println(json);
+            resp.setStatus(HttpServletResponse.SC_OK);
+        }
     }
 }

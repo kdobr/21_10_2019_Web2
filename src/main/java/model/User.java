@@ -1,5 +1,7 @@
 package model;
 
+import java.util.Objects;
+
 public class User {
 
     private Long id;
@@ -37,7 +39,23 @@ public class User {
         return id;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User)) return false;
+        User user = (User) o;
+        return getEmail().equals(user.getEmail()) &&
+                getPassword().equals(user.getPassword());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getEmail(), getPassword());
+    }
+
     public void setId(Long id) {
         this.id = id;
     }
+
+
 }
