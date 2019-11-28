@@ -30,6 +30,7 @@ public class UserService {
     public List<User> getAllUsers() {
         return new ArrayList<>(dataBase.values());
     }
+
     public User getUserById(Long id) {
         return dataBase.get(id);
     }
@@ -38,6 +39,7 @@ public class UserService {
         if (!isExistsThisUser(user)) {
             long key = maxId.incrementAndGet();
             User userWithId = new User(key, user.getEmail(), user.getPassword());
+            // сделать через сеттер
             dataBase.put(key, userWithId);
             return true;
         } else {
@@ -59,8 +61,10 @@ public class UserService {
 
 
     public boolean authUser(User user) {
-        if (user!=null && user.getId()!=null && isExistsThisUser(user)) {
-            authMap.put(user.getId(), user);
+        if (isExistsThisUser(user)) {
+            List<User> userList = new ArrayList<>(dataBase.values());
+            long id = userList.get(userList.indexOf(user)).getId();
+            authMap.put(id, user);
             return true;
         } else {
             return false;

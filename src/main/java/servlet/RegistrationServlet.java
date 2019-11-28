@@ -24,24 +24,18 @@ public class RegistrationServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String password = req.getParameter("password");
         String email = req.getParameter("email");
-        if (password==null||email==null){
+        if (password == null || email == null) {
             resp.setContentType("text/html;charset=utf-8");
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
 
         User tempUser = new User(email, password);
-        if (userService.isExistsThisUser(tempUser)){
+        if (userService.isExistsThisUser(tempUser)) {
             resp.setContentType("text/html;charset=utf-8");
             resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return;
         }
-        //User user = new User(id, email, password);
         userService.addUser(tempUser);
-        Gson gson = new Gson();
-        String json = gson.toJson(tempUser);
-        resp.setContentType("text/html;charset=utf-8");
-        resp.getWriter().println(json);
-        resp.setStatus(HttpServletResponse.SC_OK);
     }
 }
